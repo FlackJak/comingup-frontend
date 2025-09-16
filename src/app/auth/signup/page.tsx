@@ -10,7 +10,7 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [_error, setError] = useState("");
   const { signup } = useAuth();
   const router = useRouter();
 
@@ -24,7 +24,7 @@ export default function SignUp() {
     try {
       await signup(name, email, password);
       router.push("/dashboard");
-    } catch (err) {
+    } catch {
       setError("Signup failed");
     }
   }
@@ -32,7 +32,7 @@ export default function SignUp() {
   return (
     <div className="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded shadow">
       <h1 className="text-2xl font-bold mb-6 text-center">Sign Up</h1>
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {_error && <p className="text-red-600 mb-4">{_error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block mb-1 font-semibold">
