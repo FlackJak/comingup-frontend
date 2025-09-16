@@ -6,9 +6,9 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [_error, setError] = useState<string>("");
   const { login } = useAuth();
   const router = useRouter();
 
@@ -18,7 +18,7 @@ export default function SignIn() {
     try {
       await login(email, password);
       router.push("/dashboard");
-    } catch (err) {
+    } catch {
       setError("Invalid email or password");
     }
   }
@@ -26,7 +26,7 @@ export default function SignIn() {
   return (
     <div className="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded shadow">
       <h1 className="text-2xl font-bold mb-6 text-center">Sign In</h1>
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {_error && <p className="text-red-600 mb-4">{_error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="block mb-1 font-semibold">
@@ -62,7 +62,7 @@ export default function SignIn() {
         </button>
       </form>
       <p className="mt-4 text-center">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link href="/auth/signup" className="text-blue-600 hover:underline">
           Sign Up
         </Link>
