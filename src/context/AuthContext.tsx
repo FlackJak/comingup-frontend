@@ -10,6 +10,20 @@ interface User {
   email: string;
 }
 
+interface LoginResponse {
+  login: {
+    token: string;
+    user: User;
+  };
+}
+
+interface SignupResponse {
+  signup: {
+    token: string;
+    user: User;
+  };
+}
+
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
@@ -37,27 +51,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const data: any = await client.request(SIGNIN_MUTATION, { email, password });
+      const data: LoginResponse = await client.request(SIGNIN_MUTATION, { email, password });
       const { token, user } = data.login;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
       // Update client headers with token
       client.setHeader("Authorization", `Bearer ${token}`);
-    } catch (error) {
+    } catch (_error) {
       throw new Error("Login failed");
     }
   };
 
   const signup = async (name: string, email: string, password: string) => {
     try {
-      const data: any = await client.request(SIGNUP_MUTATION, { name, email, password });
+      const data: SignupResponse = await client.request(SIGNUP_MUTATION, { name, email, password });
       const { token, user } = data.signup;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
       client.setHeader("Authorization", `Bearer ${token}`);
-    } catch (error) {
+    } catch (_error) {
       throw new Error("Signup failed");
     }
   };
