@@ -38,13 +38,13 @@ export default function AdminPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const usersData: any = await client.request(GET_USERS);
-      const coursesData: any = await client.request(GET_ALL_COURSES);
+      const usersData = await client.request(GET_USERS) as { users: User[] };
+      const coursesData = await client.request(GET_ALL_COURSES) as { courses: Course[] };
       setUsers(usersData.users);
       setCourses(coursesData.courses);
-    } catch (err) {
+    } catch (_error: unknown) {
       setError("Failed to load data");
-      console.error(err);
+      console.error(_error);
     } finally {
       setLoading(false);
     }
@@ -59,9 +59,9 @@ export default function AdminPage() {
       try {
         await client.request(DELETE_USER_MUTATION, { id });
         setUsers(users.filter(user => user.id !== id));
-      } catch (err) {
+      } catch (_error: unknown) {
         alert("Failed to delete user");
-        console.error(err);
+        console.error(_error);
       }
     }
   };
@@ -71,9 +71,9 @@ export default function AdminPage() {
       try {
         await client.request(DELETE_COURSE_MUTATION, { id });
         setCourses(courses.filter(course => course.id !== id));
-      } catch (err) {
+      } catch (_error: unknown) {
         alert("Failed to delete course");
-        console.error(err);
+        console.error(_error);
       }
     }
   };
@@ -85,8 +85,8 @@ export default function AdminPage() {
       setUserFormData({ name: "", email: "", password: "", role: "student" });
       setShowCreateUserForm(false);
       fetchData();
-    } catch (err) {
-      console.error(err);
+    } catch (_error: unknown) {
+      console.error(_error);
       setError("Failed to create user");
     }
   };
@@ -104,8 +104,8 @@ export default function AdminPage() {
       setEditingUser(null);
       setUserFormData({ name: "", email: "", password: "", role: "student" });
       fetchData();
-    } catch (err) {
-      console.error(err);
+    } catch (_error: unknown) {
+      console.error(_error);
       setError("Failed to update user");
     }
   };
