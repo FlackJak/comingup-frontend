@@ -24,11 +24,16 @@ interface Course {
 export default function AdminPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCreateUserForm, setShowCreateUserForm] = useState(false);
+  const [showCreateUserForm, setShowCreateUserForm] = useState<boolean>(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [userFormData, setUserFormData] = useState({
+  const [userFormData, setUserFormData] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }>({
     name: "",
     email: "",
     password: "",
@@ -38,8 +43,8 @@ export default function AdminPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const usersData = await client.request(GET_USERS) as { users: User[] };
-      const coursesData = await client.request(GET_ALL_COURSES) as { courses: Course[] };
+      const usersData = await client.request<{ users: User[] }>(GET_USERS);
+      const coursesData = await client.request<{ courses: Course[] }>(GET_ALL_COURSES);
       setUsers(usersData.users);
       setCourses(coursesData.courses);
     } catch (_error: unknown) {
@@ -78,7 +83,7 @@ export default function AdminPage() {
     }
   };
 
-  const handleCreateUser = async (e: React.FormEvent) => {
+  const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await client.request(CREATE_USER_MUTATION, userFormData);
@@ -91,7 +96,7 @@ export default function AdminPage() {
     }
   };
 
-  const handleUpdateUser = async (e: React.FormEvent) => {
+  const handleUpdateUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!editingUser) return;
     try {

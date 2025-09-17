@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { client } from "@/lib/graphqlClient";
 import { GET_COURSE_DETAIL, ENROLL_MUTATION, ADD_REVIEW_MUTATION, UPDATE_REVIEW_MUTATION, DELETE_REVIEW_MUTATION, ADD_TO_WISHLIST_MUTATION, PROCESS_PAYMENT_MUTATION } from "@/graphql/queries";
@@ -41,11 +41,11 @@ export default function CourseDetail() {
   const [editRating, setEditRating] = useState(5);
   const [editComment, setEditComment] = useState("");
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     try {
-      const courseData: any = await client.request(GET_COURSE_DETAIL, { id });
+      const courseData = await client.request(GET_COURSE_DETAIL, { id }) as { course: Course };
       setCourse(courseData.course);
     } catch (err) {
       setError("Failed to load course details");
@@ -53,11 +53,11 @@ export default function CourseDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchData();
-  }, [id]);
+  }, [fetchData]);
 
   const handleAddReview = async () => {
     try {
@@ -108,7 +108,7 @@ export default function CourseDetail() {
 
   const handleProcessPayment = async (paymentMethod: string) => {
     try {
-      const result: any = await client.request(PROCESS_PAYMENT_MUTATION, { courseId: id, paymentMethod });
+      const result = await client.request(PROCESS_PAYMENT_MUTATION, { courseId: id, paymentMethod }) as { processPayment: string };
       alert(result.processPayment);
     } catch (err) {
       alert("Payment failed");

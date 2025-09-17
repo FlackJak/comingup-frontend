@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { client } from "@/lib/graphqlClient";
-import { GET_MY_COURSES, CREATE_COURSE_MUTATION, UPDATE_COURSE_MUTATION, DELETE_COURSE_MUTATION } from "@/graphql/queries";
+import { GET_MY_COURSES, CREATE_COURSE_MUTATION, DELETE_COURSE_MUTATION } from "@/graphql/queries";
 
 interface Course {
   id: string;
@@ -13,7 +13,7 @@ interface Course {
   category: string;
   tags: string[];
   rating: number;
-  reviews: any[];
+  reviews: unknown[];
 }
 
 export default function InstructorDashboard() {
@@ -32,9 +32,9 @@ export default function InstructorDashboard() {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const data: any = await client.request(GET_MY_COURSES);
+      const data = await client.request(GET_MY_COURSES) as { myCourses: Course[] };
       setCourses(data.myCourses);
-    } catch (err) {
+    } catch (err: unknown) {
       setError("Failed to load courses");
       console.error(err);
     } finally {
@@ -60,7 +60,7 @@ export default function InstructorDashboard() {
       setFormData({ title: "", description: "", price: 0, category: "", tags: "" });
       setShowCreateForm(false);
       fetchCourses();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
       setError("Failed to create course");
     }
@@ -71,7 +71,7 @@ export default function InstructorDashboard() {
       try {
         await client.request(DELETE_COURSE_MUTATION, { id });
         fetchCourses();
-      } catch (err) {
+      } catch (err: unknown) {
         console.error(err);
         setError("Failed to delete course");
       }

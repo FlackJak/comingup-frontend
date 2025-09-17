@@ -20,21 +20,16 @@ const categories = ["All", "Programming", "Data Science", "Design", "Business"];
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const data: any = await client.request(GET_COURSES);
+        const data = await client.request(GET_COURSES) as { courses: Course[] };
         setCourses(data.courses);
       } catch (err) {
-        setError("Failed to load courses");
         console.error(err);
-      } finally {
-        setLoading(false);
       }
     };
     fetchCourses();

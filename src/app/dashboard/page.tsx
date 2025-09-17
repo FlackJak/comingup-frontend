@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ const enrolledCourses: Course[] = [
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const [courses, setCourses] = useState(enrolledCourses);
+  const courses = enrolledCourses;
 
   function handleLogout() {
     logout();
